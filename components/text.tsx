@@ -4,20 +4,28 @@ import axios from 'axios';
 export default function Text() {
   const [message, setMessage] = useState('');
   useEffect(() => {
-    const url = '/api/hello'
+    updateMessage();
+  }, []);
+
+  function updateMessage() {
+    setMessage('updatin...');
     axios
-      .get(url)
+      .get('/api/hello')
       .then(res => {
         setMessage(res.data.name);
       })
       .catch(err => {
+        setMessage('error ' + err);
         console.error('error ', err);
       });
-  }, []);
+  }
 
   return (
     <div style={{ padding: 10, backgroundColor: 'blanchedalmond', width: '100%', marginBottom: 20 }}>
-      TEXT: {message}
+      <span style={{ marginRight: 20 }}>TEXT: {message}</span>
+      <button type="button" onClick={updateMessage} style={{ padding: 20 }}>
+        Update
+      </button>
     </div>
   )
 }
