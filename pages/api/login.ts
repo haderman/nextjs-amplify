@@ -3,7 +3,7 @@ import faunadb, { query as q } from 'faunadb';
 import { uuid } from 'uuidv4';
 
 const client = new faunadb.Client({
-  secret: process.env.FAUNA_ACCESS_KEY_ADMIN,
+  secret: process.env.FAUNA_ACCESS_KEY_ADMIN as string,
 });
 
 export default (req: NextApiRequest, res: NextApiResponse<string>) => {
@@ -20,7 +20,8 @@ export default (req: NextApiRequest, res: NextApiResponse<string>) => {
       res.status(201).send(token);
     })
     .catch(error => {
-      res.status(error.requestResult.statusCode).send(error);
+      const errorMSG = `${error} - env var: ${process.env.FAUNA_ACCESS_KEY_ADMIN}`
+      res.status(error.requestResult.statusCode).send(errorMSG);
     });
 }
 
