@@ -82,7 +82,11 @@ export function getSecretV2() {
   return new Promise((resolve, reject) => {
     client.getSecretValue({ SecretId: secretName }, function(err, data) {
       inCallback = 'in callback getting ' + secretName;
-      resolve(inCallback);
+      if (err) {
+        resolve(err.code);
+      } else {
+        resolve(JSON.stringify(data));
+      }
       // if (err) {
       //   error = err.code;
       //   reject(error.code);
