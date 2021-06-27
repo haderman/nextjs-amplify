@@ -67,3 +67,7 @@ export function getSecret() {
 export function getError() {
   return error;
 }
+
+export function getDecodedBinarySecret() {
+  return decodedBinarySecret;
+}

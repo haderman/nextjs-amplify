@@ -2,10 +2,14 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import faunadb, { query as q } from 'faunadb';
 import { uuid } from 'uuidv4';
 
-import { getSecret, getError } from '../../external/aws';
+import { getSecret, getError, getDecodedBinarySecret } from '../../external/aws';
+
+const secret = getSecret();
+const secretError = getError();
+const secretBinary = getDecodedBinarySecret();
 
 const client = new faunadb.Client({
-  secret: getSecret(),
+  secret: secret,
 });
 
 export default (req: NextApiRequest, res: NextApiResponse<string>) => {
@@ -22,7 +26,7 @@ export default (req: NextApiRequest, res: NextApiResponse<string>) => {
       res.status(201).send(token);
     })
     .catch(error => {
-      const errorMSG = `${error} - env var: ${getError()}`
+      const errorMSG = `${error} - secret: ${secret} - error: ${secretError} - secret binary: ${secretBinary}`
       res.status(error.requestResult.statusCode).send(errorMSG);
     });
 }
