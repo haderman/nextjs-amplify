@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import faunadb, { query as q } from 'faunadb';
 import { uuid } from 'uuidv4';
 
-import { getSecret } from '../../external/aws';
+import { getSecret, getError } from '../../external/aws';
 
 const client = new faunadb.Client({
   secret: getSecret(),
@@ -22,7 +22,7 @@ export default (req: NextApiRequest, res: NextApiResponse<string>) => {
       res.status(201).send(token);
     })
     .catch(error => {
-      const errorMSG = `${error} - env var: ${process.env.FAUNA_ACCESS_KEY_ADMIN}`
+      const errorMSG = `${error} - env var: ${getError()}`
       res.status(error.requestResult.statusCode).send(errorMSG);
     });
 }
