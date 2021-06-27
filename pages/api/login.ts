@@ -19,28 +19,29 @@ export default (req: NextApiRequest, res: NextApiResponse<string>) => {
     return;
   }
 
-  createAuthToken()
-    .then(({ result, token }) => {
-      if (!result.ref) {
-        return res.status(404).send('token ref is missing');
-      }
-      res.status(201).send(token);
+  getSecretV2()
+    .then(val => {
+      res.status(201).send(val as string);
     })
-    .catch(error => {
-      getSecretV2()
-        .then(val => {
-          res.status(error.requestResult.statusCode).send(val as string);
-        })
-        .catch(err => {
-          res.status(error.requestResult.statusCode).send(err);
-        })
-      // const secret = getSecret();
-      // const secretError = getError();
-      // const secretBinary = getDecodedBinarySecret();
-      // const inCallback = getInCallback();
-      // const errorMSG = `${error} - secret: ${secret} - error: ${secretError} - secret binary: ${secretBinary} - inCallback: ${inCallback}`
-      // res.status(error.requestResult.statusCode).send(errorMSG);
-    });
+    .catch(err => {
+      res.status(401).send(err);
+    })
+
+  // createAuthToken()
+  //   .then(({ result, token }) => {
+  //     if (!result.ref) {
+  //       return res.status(404).send('token ref is missing');
+  //     }
+  //     res.status(201).send(token);
+  //   })
+  //   .catch(error => {
+  //     const secret = getSecret();
+  //     const secretError = getError();
+  //     const secretBinary = getDecodedBinarySecret();
+  //     const inCallback = getInCallback();
+  //     const errorMSG = `${error} - secret: ${secret} - error: ${secretError} - secret binary: ${secretBinary} - inCallback: ${inCallback}`
+  //     res.status(error.requestResult.statusCode).send(errorMSG);
+  //   });
 }
 
 function createAuthToken(): Promise<{ result: any, token: string }> {
