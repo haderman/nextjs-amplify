@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import faunadb, { query as q } from 'faunadb';
 import { uuid } from 'uuidv4';
 
-import { getSecret, getError, getDecodedBinarySecret, getInCallback } from '../../external/aws';
+import { getSecret, getError, getDecodedBinarySecret, getInCallback, getSecretV2 } from '../../external/aws';
 
 const secret = getSecret();
 const secretError = getError();
@@ -27,12 +27,19 @@ export default (req: NextApiRequest, res: NextApiResponse<string>) => {
       res.status(201).send(token);
     })
     .catch(error => {
-      const secret = getSecret();
-      const secretError = getError();
-      const secretBinary = getDecodedBinarySecret();
-      const inCallback = getInCallback();
-      const errorMSG = `${error} - secret: ${secret} - error: ${secretError} - secret binary: ${secretBinary} - inCallback: ${inCallback}`
-      res.status(error.requestResult.statusCode).send(errorMSG);
+      getSecretV2()
+        .then(val => {
+          res.status(error.requestResult.statusCode).send(val as string);
+        })
+        .catch(err => {
+          res.status(error.requestResult.statusCode).send(err);
+        })
+      // const secret = getSecret();
+      // const secretError = getError();
+      // const secretBinary = getDecodedBinarySecret();
+      // const inCallback = getInCallback();
+      // const errorMSG = `${error} - secret: ${secret} - error: ${secretError} - secret binary: ${secretBinary} - inCallback: ${inCallback}`
+      // res.status(error.requestResult.statusCode).send(errorMSG);
     });
 }
 
