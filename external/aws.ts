@@ -82,22 +82,23 @@ export function getSecretV2() {
   return new Promise((resolve, reject) => {
     client.getSecretValue({ SecretId: secretName }, function(err, data) {
       inCallback = 'in callback getting ' + secretName;
-      if (err) {
-        error = err.code;
-        reject(error.code);
-      }
-      else {
-        // Decrypts secret using the associated KMS CMK.
-        // Depending on whether the secret is a string or binary, one of these fields will be populated.
-        if ('SecretString' in data) {
-          secret = data.SecretString;
-          resolve(secret);
-        } else {
-          let buff = new Buffer(data.SecretBinary, 'base64');
-          decodedBinarySecret = buff.toString('ascii');
-          resolve(decodedBinarySecret);
-        }
-      }
+      resolve(inCallback);
+      // if (err) {
+      //   error = err.code;
+      //   reject(error.code);
+      // }
+      // else {
+      //   // Decrypts secret using the associated KMS CMK.
+      //   // Depending on whether the secret is a string or binary, one of these fields will be populated.
+      //   if ('SecretString' in data) {
+      //     secret = data.SecretString;
+      //     resolve(secret);
+      //   } else {
+      //     let buff = new Buffer(data.SecretBinary, 'base64');
+      //     decodedBinarySecret = buff.toString('ascii');
+      //     resolve(decodedBinarySecret);
+      //   }
+      // }
     });
   })
 }
