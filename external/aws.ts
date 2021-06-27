@@ -21,8 +21,10 @@ let client = new AWS.SecretsManager({
 // We rethrow the exception by default.
 
 let error;
+let inCallback;
 
 client.getSecretValue({ SecretId: secretName }, function(err, data) {
+  inCallback = 'in callback getting ' + secretName;
   if (err) {
     error = err.code;
     // if (err.code === 'DecryptionFailureException')
@@ -70,4 +72,8 @@ export function getError() {
 
 export function getDecodedBinarySecret() {
   return decodedBinarySecret;
+}
+
+export function getInCallback() {
+  return inCallback;
 }
